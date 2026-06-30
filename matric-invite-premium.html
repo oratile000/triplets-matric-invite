@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Matric Dance Journey - Oratile, Onthatile, Omphile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Lora:wght@400;500&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Lora', 'Georgia', serif;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #f5f5f5;
+            overflow: hidden;
+        }
+
+        /* ===== PARTICLES BACKGROUND ===== */
+        .particles-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.5;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #d4af37;
+            border-radius: 50%;
+            animation: particleFloat var(--duration) ease-in-out infinite;
+            opacity: var(--opacity);
+        }
+
+        @keyframes particleFloat {
+            0%, 100% {
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            50% {
+                transform: translateY(var(--distance)) translateX(var(--offset)) scale(1.2);
+            }
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.8s forwards;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-content {
+            text-align: center;
+            animation: loadingFade 1.5s ease-out 0.5s both;
+        }
+
+        @keyframes loadingFade {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .loading-text {
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            color: #d4af37;
+            letter-spacing: 4px;
+            font-weight: 300;
+            font-family: 'Playfair Display', serif;
+            line-height: 1.4;
+        }
+
+        .loading-subtext {
+            font-size: 1rem;
+            color: #a08860;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            font-weight: 300;
+            animation: subTextFade 2s ease-out 1.5s both;
+        }
+
+        @keyframes subTextFade {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            position: relative;
+            z-index: 100;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ===== ENVELOPE SECTION ===== */
+        .envelope-section {
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: envelopeAppear 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 3.2s both;
+        }
+
+        @keyframes envelopeAppear {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .envelope-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1.4;
+            perspective: 1200px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 1px solid #d4af37;
+            border-radius: 6px;
+            box-shadow: 
+                0 8px 32px rgba(212, 175, 55, 0.15),
+                inset 0 0 40px rgba(212, 175, 55, 0.05),
+                0 0 80px rgba(212, 175, 55, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 175, 55, 0.1), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .envelope:hover::before {
+            opacity: 1;
+        }
+
+        .envelope:hover {
+            box-shadow: 
+                0 12px 48px rgba(212, 175, 55, 0.25),
+                inset 0 0 60px rgba(212, 175, 55, 0.1),
+                0 0 100px rgba(212, 175, 55, 0.15);
+            transform: scale(1.02);
+        }
+
+        .envelope.opening {
+            animation: envelopeOpen 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes envelopeOpen {
+            0% {
+                transform: scale(1) rotateX(0deg) rotateY(0deg);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.05) rotateX(-10deg);
+            }
+            100% {
+                transform: scale(0.85) rotateX(-30deg) rotateY(10deg);
+                opacity: 0;
+                pointer-events: none;
+            }
+        }
+
+        /* ===== WAXSEAL ===== */
+        .wax-seal {
+            position: relative;
+            width: clamp(80px, 20vw, 140px);
+            height: clamp(80px, 20vw, 140px);
+            background: radial-gradient(circle at 35% 35%, #f4d46d 0%, #e8c547 30%, #d4af37 60%, #b8860b 100%);
+            border-radius: 50%;
+            box-shadow: 
+                0 8px 24px rgba(212, 175, 55, 0.4),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.4),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.2),
+                0 0 0 2px rgba(212, 175, 55, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #2a2a2a;
+            letter-spacing: 1.5px;
+            animation: sealPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite 3.5s;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes sealPulse {
+            0%, 100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 
+                    0 8px 24px rgba(212, 175, 55, 0.4),
+                    inset -3px -3px 8px rgba(0, 0, 0, 0.4),
+                    inset 2px 2px 8px rgba(255, 255, 255, 0.2),
+                    0 0 0 2px rgba(212, 175, 55, 0.5);
+            }
+            50% {
+                transform: scale(1.08) rotate(3deg);
+                box-shadow: 
+                    0 12px 32px rgba(212, 175, 55, 0.5),
+                    inset -3px -3px 8px rgba(0, 0, 0, 0.4),
+                    inset 2px 2px 8px rgba(255, 255, 255, 0.3),
+                    0 0 0 3px rgba(212, 175, 55, 0.7);
+            }
+        }
+
+        .envelope:hover .wax-seal {
+            transform: scale(1.15) rotate(-5deg);
+            box-shadow: 
+                0 15px 40px rgba(212, 175, 55, 0.6),
+                inset -3px -3px 8px rgba(0, 0, 0, 0.4),
+                inset 2px 2px 8px rgba(255, 255, 255, 0.3),
+                0 0 0 4px rgba(212, 175, 55, 0.8);
+        }
+
+        .seal-text {
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* ===== CONTENT SECTION ===== */
+        .content-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow-y: auto;
+            padding: 60px 20px 40px;
+        }
+
+        .content-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            animation: contentReveal 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes contentReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .invitation-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            color: #d4af37;
+            font-weight: 400;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+            line-height: 1.2;
+        }
+
+        .divider {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            margin: 25px 0 30px;
+        }
+
+        .invitation-names {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.6rem, 5vw, 2.6rem);
+            color: #f5f5f5;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .invitation-subtitle {
+            font-family: 'Lora', serif;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #b8860b;
+            font-weight: 300;
+            letter-spacing: 2px;
+            line-height: 1.8;
+            max-width: 600px;
+        }
+
+        /* ===== CLOSE BUTTON ===== */
+        .close-btn {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: transparent;
+            border: 2px solid #d4af37;
+            color: #d4af37;
+            font-size: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            font-weight: 300;
+        }
+
+        .close-btn:hover {
+            background: #d4af37;
+            color: #0f0f0f;
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+        }
+
+        /* ===== SCROLL INDICATOR ===== */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            animation: scrollBounce 2.5s ease-in-out infinite 3.8s;
+        }
+
+        @keyframes scrollBounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+                opacity: 0.7;
+            }
+            50% {
+                transform: translateX(-50%) translateY(12px);
+                opacity: 1;
+            }
+        }
+
+        .scroll-text {
+            font-size: 0.75rem;
+            color: #d4af37;
+            letter-spacing: 2px;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d4af37;
+            border-top: none;
+            border-left: none;
+            transform: rotate(-45deg);
+            margin: 0 auto;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 768px) {
+            .loading-text {
+                font-size: 1.8rem;
+            }
+
+            .loading-subtext {
+                font-size: 0.9rem;
+                margin-top: 15px;
+            }
+
+            .close-btn {
+                width: 45px;
+                height: 45px;
+                top: 20px;
+                right: 20px;
+                font-size: 24px;
+            }
+
+            .scroll-indicator {
+                bottom: 30px;
+            }
+
+            .invitation-title {
+                margin-bottom: 20px;
+            }
+
+            .divider {
+                margin: 20px 0 25px;
+            }
+
+            .content-container {
+                padding: 50px 20px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loading-text {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+
+            .close-btn {
+                width: 40px;
+                height: 40px;
+                top: 15px;
+                right: 15px;
+                font-size: 20px;
+            }
+
+            .scroll-text {
+                font-size: 0.7rem;
+            }
+
+            .content-container {
+                padding: 40px 15px 25px;
+            }
+
+            .divider {
+                width: 60px;
+            }
+        }
+
+        /* ===== ACCESSIBILITY ===== */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* ===== TOUCH OPTIMIZATION ===== */
+        @media (hover: none) {
+            .envelope {
+                box-shadow: 0 12px 48px rgba(212, 175, 55, 0.25),
+                           inset 0 0 60px rgba(212, 175, 55, 0.1),
+                           0 0 100px rgba(212, 175, 55, 0.15);
+            }
+
+            .wax-seal {
+                transform: scale(1.08);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Particles Background -->
+    <div class="particles-bg" id="particlesContainer"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-text">Every story has a beginning...</div>
+            <div class="loading-subtext">A journey of eighteen years</div>
+        </div>
+    </div>
+
+    <!-- Main Container with Envelope -->
+    <div class="main-container" id="mainContainer">
+        <div class="envelope-section">
+            <div class="envelope-container">
+                <div class="envelope" id="envelope">
+                    <div class="wax-seal" id="waxSeal">
+                        <span class="seal-text">N Family</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-text">OPEN THE INVITATION</div>
+            <div class="scroll-arrow"></div>
+        </div>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container" id="contentContainer">
+        <button class="close-btn" id="closeBtn">&times;</button>
+        
+        <div class="content-wrapper">
+            <h1 class="invitation-title">The Matric Dance Journey</h1>
+            <div class="divider"></div>
+            <h2 class="invitation-names">Oratile<br>Onthatile<br>Omphile</h2>
+            <p class="invitation-subtitle">Three siblings. One journey. One unforgettable evening.</p>
+        </div>
+
+        <div class="scroll-indicator">
+            <div class="scroll-text">SCROLL TO DISCOVER</div>
+            <div class="scroll-arrow"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== PARTICLES GENERATION =====
+        function createParticles() {
+            const container = document.getElementById('particlesContainer');
+            const particleCount = window.innerWidth < 768 ? 20 : 40;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const duration = Math.random() * 6 + 8;
+                const delay = Math.random() * 5;
+                const distance = Math.random() * 150 - 75;
+                const offset = Math.random() * 100 - 50;
+                const opacity = Math.random() * 0.6 + 0.2;
+                
+                particle.style.setProperty('--duration', `${duration}s`);
+                particle.style.setProperty('--distance', `${distance}px`);
+                particle.style.setProperty('--offset', `${offset}px`);
+                particle.style.setProperty('--opacity', opacity);
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = delay + 's';
+                
+                container.appendChild(particle);
+            }
+        }
+
+        // ===== LOADING SCREEN =====
+        function handleLoadingComplete() {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            setTimeout(() => {
+                loadingOverlay.classList.add('fade-out');
+            }, 2800);
+        }
+
+        // ===== ENVELOPE INTERACTION =====
+        const envelope = document.getElementById('envelope');
+        const contentContainer = document.getElementById('contentContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const closeBtn = document.getElementById('closeBtn');
+
+        function openEnvelope() {
+            envelope.classList.add('opening');
+            
+            setTimeout(() => {
+                mainContainer.style.display = 'none';
+                contentContainer.classList.add('active');
+                playOpenSound();
+            }, 800);
+        }
+
+        function closeEnvelope() {
+            contentContainer.classList.remove('active');
+            mainContainer.style.display = 'flex';
+            envelope.classList.remove('opening');
+        }
+
+        // ===== AUDIO EFFECT =====
+        function playOpenSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const now = audioContext.currentTime;
+                
+                // Create a subtle, elegant sound
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                const filter = audioContext.createBiquadFilter();
+                
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioContext.destination);
+                
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(2000, now);
+                
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(400, now + 0.15);
+                
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } catch (e) {
+                console.log('Audio not available');
+            }
+        }
+
+        // ===== MOUSE TILT EFFECT =====
+        function setupTiltEffect() {
+            document.addEventListener('mousemove', (e) => {
+                if (envelope.classList.contains('opening')) return;
+                
+                const rect = envelope.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                
+                const rotateX = (e.clientY - centerY) * 0.015;
+                const rotateY = (e.clientX - centerX) * -0.015;
+                
+                envelope.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+            });
+
+            document.addEventListener('mouseleave', () => {
+                envelope.style.transform = 'perspective(1200px) rotateX(0) rotateY(0) scale(1)';
+            });
+        }
+
+        // ===== TOUCH SUPPORT =====
+        envelope.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            openEnvelope();
+        }, { passive: true });
+
+        // ===== EVENT LISTENERS =====
+        envelope.addEventListener('click', openEnvelope);
+        closeBtn.addEventListener('click', closeEnvelope);
+
+        // ===== INITIALIZATION =====
+        window.addEventListener('load', () => {
+            createParticles();
+            handleLoadingComplete();
+            setupTiltEffect();
+        });
+
+        // Handle window resize for particles
+        window.addEventListener('resize', () => {
+            document.getElementById('particlesContainer').innerHTML = '';
+            createParticles();
+        });
+    </script>
+</body>
+</html>
